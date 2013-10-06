@@ -1,0 +1,65 @@
+{% extends "layout.html" %} 
+{% block content %}
+<body>
+<form action="{{ url_for('helpdesk') }}", method='post'>
+    <div class=ticket_nav>
+        {% for ticket in tickets.open_tickets.keys() %}
+            <div class=open_ticket_container>{{ticket}}: {{tickets.open_tickets[ticket]['message']}}<br></div>
+        {% endfor%}
+    </div>
+    
+    
+    <div class=article_nav>
+        {% for article in articles.all_articles.keys() %}
+            <div class='articles_container' onclick="setCurrentArticle({{article}}, '{{articles.all_articles[article]['text']}}')">
+                {{articles.all_articles[article]['title']}}
+            </div><br>
+        {% endfor %}
+    </div>
+    
+        
+    <div class=current_ticket_container>
+            <strong>Sender: </strong> {{tickets.current_ticket['sender_name']}} <br>
+            <strong>Email: </strong> {{tickets.current_ticket['sender_email']}} <br>
+            <strong>Location: </strong> {{tickets.current_ticket['location']}} <br>
+            <strong>Device: </strong> {{tickets.current_ticket['devices']}} <br>
+            <br>
+            <strong> Message: </strong><br>
+            <br><p>{{tickets.current_ticket['message']}}</p>
+    </div>
+    
+    <input type=hidden name='current_ticket_value', id='current_ticket_value' value={{tickets.open_tickets.iterkeys().next()}}>
+    <input type=hidden name='response_article_value' id='response_article_value'>
+    <input type=hidden name='ticket_state' id='ticket_state' value='no'>
+    
+    <br>
+    
+    <div class=response_container>
+        <strong>Response: </strong><br>
+            <textarea name="response_body" id="response_body" rows=20 cols=60>
+            </textarea>
+    </div>
+    <br>
+        
+</html>
+</body>
+    <div class='submit_container'>
+        <input type=submit value=Send>
+        <input type=submit value=Close onclick="setTicketState()"">
+    </div>
+</form>
+<script type="text/javascript">
+
+function setCurrentArticle(id, content){
+    document.getElementById("response_body").value = content;
+    document.getElementById('response_article_value').value = id;
+    console.log(document.getElementById('response_article_value').value)
+    console.log(document.getElementById('current_ticket_value').value)
+}
+
+function setTicketState() {
+    document.getElementById('ticket_state').value = 'yes';
+}
+</script> 
+
+{% endblock %}
